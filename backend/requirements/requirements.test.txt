@@ -1,0 +1,5 @@
+-r requirements.txt
+-r requirements.dev.txt
+
+# coverage lib
+coverage==7.4.1

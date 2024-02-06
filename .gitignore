@@ -1,0 +1,40 @@
+
+# pipenv
+Pipfile
+Pipfile.lock
+
+# Editor
+*.iml
+.idea
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Python Environment
+ENV
+
+# Static files
+staticfiles
+
+db.sqlite3
+
+**/.DS_Store
+
+db.split3
+.DS-Store
+
+# Elastic Beanstalk Files
+.elasticbeanstalk/*
+!.elasticbeanstalk/*.cfg.yml
+!.elasticbeanstalk/*.global.yml
+
+
+local.env
+app/.env
+
+.env
+
+# cronjob
+app/cronjob.log
