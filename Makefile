@@ -17,6 +17,8 @@ Manage $(PROJECTNAME). Usage:
 make lint           	Run linter
 make format         	Run formatter
 make test           	Run tests
+make coverage 			Run coverage
+make coverage-report	Generate coverage report
 make super-user     	Create super user
 make make-migrations 	Make migrations
 make migrate        	Migrate
