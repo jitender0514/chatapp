@@ -2,7 +2,7 @@ include .env
 export $(shell sed 's/=.*//' .env)
 
 SHELL := /bin/sh
-PROJECTNAME ?= default_app_name
+PROJECTNAME ?= chatapp
 APP_NAME := $(PROJECTNAME)
 BACKEND_APP_NAME := $(APP_NAME)-backend
 
@@ -52,6 +52,12 @@ test:
 coverage:
 	docker exec -it $(BACKEND_APP_NAME) sh "-c" \
 	"coverage run ./manage.py test"
+
+.PHONY: startapp
+startapp:
+	docker exec -it $(BACKEND_APP_NAME) sh "-c" \
+	"python ./manage.py startapp ${name}"
+
 
 .PHONY: coverage-report
 coverage-report:
