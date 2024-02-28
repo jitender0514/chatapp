@@ -21,7 +21,7 @@ from django.conf import settings
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('api-auth/', include('rest_framework.urls')),
     path("", include("chat.urls", namespace='chat')),
+    path("", include("user.urls", namespace='user')),
 ]
-
-print(static(settings.STATIC_URL, document_root=settings.STATIC_ROOT))

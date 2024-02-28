@@ -52,8 +52,13 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     
+    # third party
+    'rest_framework',
+    'rest_framework.authtoken',
+    
     # add apps
     'chat',
+    'user',
 ]
 
 MIDDLEWARE = [
@@ -146,8 +151,6 @@ STATICFILES_DIRS = [
     Path(BASE_DIR, "static")
 ]
 
-print(Path(__file__).resolve().parent.parent)
-
 
 MEDIA_URL = "media/"
 MEDIA_ROOT = Path(BASE_DIR, "media")
@@ -161,7 +164,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # set login redirect and logout urls
 LOGIN_REDIRECT_URL = "chat:chat-page"
-LOGOUT_REDIRECT_URL = "chat:login-user"
+LOGOUT_REDIRECT_URL = "user:login-user"
 
 
 
@@ -170,4 +173,21 @@ CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "channels.layers.InMemoryChannelLayer"
     }
+}
+
+
+
+# ----------------------------------------------------------------
+# REST API
+# ----------------------------------------------------------------
+REST_FRAMEWORK = {
+    # Use Django's standard `django.contrib.auth` permissions,
+    # or allow read-only access for unauthenticated users.
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated'
+    ],
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+    ]
 }
