@@ -1,0 +1,22 @@
+.modal.fade .modal-content {
+  opacity: 0;
+  visibility: hidden;
+  transform: scale(1.1);
+}
+.modal.show .modal-content {
+  opacity: 1;
+  visibility: visible;
+  transform: scale(1);
+}
+
+.modal-content {
+  transform: scale(1.1);
+  transition: visibility 0.25s ease-out, opacity 0.25s ease-out,
+    transform 0.25s ease-out;
+}
+
+/** Modal static */
+
+.modal.modal-static .modal-content {
+  transform: scale(1.02);
+}

@@ -19,7 +19,7 @@ from django.core.management.utils import get_random_secret_key
 APP_MODE = getenv("APP_MODE", "dev")
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
 
 # Quick-start development settings - unsuitable for production
@@ -41,12 +41,24 @@ ALLOWED_HOSTS = getenv("ALLOWED_HOSTS", "localhost").split(",")
 # Application definition
 
 INSTALLED_APPS = [
+    # add django daphne
+    'daphne' ,
+    
+    
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    
+    # third party
+    'rest_framework',
+    'rest_framework.authtoken',
+    
+    # add apps
+    'chat',
+    'user',
 ]
 
 MIDDLEWARE = [
@@ -64,7 +76,7 @@ ROOT_URLCONF = 'project.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': ['templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -78,6 +90,9 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'project.wsgi.application'
+
+# ASGI_APPLICATION
+ASGI_APPLICATION = 'project.asgi.application'
 
 
 # Database
@@ -130,7 +145,13 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
 STATIC_URL = 'static/'
-STATIC_ROOT = Path(BASE_DIR, "static")
+STATIC_ROOT = Path(BASE_DIR, "staticfiles")
+
+STATICFILES_DIRS = [
+    Path(BASE_DIR, "static")
+]
+
+
 MEDIA_URL = "media/"
 MEDIA_ROOT = Path(BASE_DIR, "media")
 
@@ -139,3 +160,34 @@ MEDIA_ROOT = Path(BASE_DIR, "media")
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+# set login redirect and logout urls
+LOGIN_REDIRECT_URL = "chat:chat-page"
+LOGOUT_REDIRECT_URL = "user:login-user"
+
+
+
+ 
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels.layers.InMemoryChannelLayer"
+    }
+}
+
+
+
+# ----------------------------------------------------------------
+# REST API
+# ----------------------------------------------------------------
+REST_FRAMEWORK = {
+    # Use Django's standard `django.contrib.auth` permissions,
+    # or allow read-only access for unauthenticated users.
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated'
+    ],
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+    ]
+}
