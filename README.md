@@ -1,6 +1,10 @@
-# django-quickstart
+# Chat-app
 
-This quickstart provides an easy django + Docker + Postgres setup to initialize the application.
+Django chat application. It is simple group based chat application. We are using `channels[daphne]` library with `InMemoryChannelLayer` channel layer for async communication, Also `djangorestframework` for the REST APIs. In the Frontend we are using `Jquery` library.
+
+## Demo
+
+![](https://github.com/jitender0514/chatapp/blob/main/docs/demo.gif)
 
 
 ## Features
@@ -27,12 +31,12 @@ This quickstart provides an easy django + Docker + Postgres setup to initialize 
 
 1. **Clone the repository:**
     ```bash
-    git clone https://github.com/jitender0514/django-quickstart.git
+    git clone https://github.com/jitender0514/chatapp.git
     ```
 
 2. **Change directory into the project:**
     ```bash
-    cd django-quickstart
+    cd chatapp
     ```
 
 3. **Copy the `env.example` file to `.env` and update the values as needed:**  
@@ -85,24 +89,6 @@ This quickstart provides an easy django + Docker + Postgres setup to initialize 
      ```
 
 You can now access the application at http://localhost:8000. The development environment allows for immediate reflection of code changes.
-
-### Production Setup
-
-1. **Build the image and run the container:**  
-
-   - If buildkit is not enabled, enable it and build the image:
-     ```bash
-       DOCKER_BUILDKIT=1 COMPOSE_DOCKER_CLI_BUILD=1 docker-compose -f docker-compose.yml up --build -d
-     ```
-
-   - If buildkit is enabled, build the image:
-     ```bash
-      docker-compose -f docker-compose.yml up --build -d
-     ```
-   - Or, use the shortcut:
-     ```bash
-       make build-prod
-     ```
 
 ---
 
