@@ -1,0 +1,78 @@
+{% load static %}
+
+<div>
+  <div
+    role="dialog"
+    id="modal-example"
+    aria-hidden="true"
+    style="display: none"
+    class="modal fixed top-0 left-0 z-50 w-screen h-screen bg-black/30 flex items-center flex-col justify-center p-6 fade"
+    tabindex="-1"
+  >
+    <div class="absolute top-0 left-0 z-[0] w-full h-full" tabindex="-1"></div>
+
+    <article
+      class="modal-content flex flex-col m-0 rounded-md bg-white sm:my-16 relative p-4 w-full max-w-2xl max-h-full"
+      aria-labelledby="modal-title"
+      aria-describedby="modal-body"
+    >
+      <header class="flex items-center justify-between">
+        <h2 class="m-0 text-xl font-medium max-w-[calc(100%_-_3rem)]">
+            {% block modal_title %} Title {% endblock %}
+        </h2>
+        <button
+          type="button"
+          class="flex items-center justify-center w-8 h-8 rounded-full bg-transparent transition-colors duration-300 hover:bg-black/10"
+          data-dismiss="modal"
+          aria-label="Close"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="22"
+            height="22"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="#000000"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+        
+          >
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </header>
+      <main class="">
+        {% block modal_body %} Modal body {% endblock %}
+      </main>
+      <footer
+        class="flex flex-shrink-0 flex-wrap items-center justify-end flex-row p-4 gap-1"
+    
+      >
+
+      {% block modal_button %}
+
+        <button
+          type="button"
+          class="flex items-center justify-center px-4 font-medium bg-gray-200 text-black h-9 rounded-md rounded md hover:bg-gray-300 transition-all duration-300"
+          data-dismiss="modal"
+        >
+          <span class="flex items-center justify-center space-x-2">Close</span>
+        </button>
+        {% comment %} <button
+          type="button"
+          class="flex items-center justify-center px-4 font-medium bg-violet-700 text-white h-9 rounded-md rounded md hover:bg-violet-800 transition-all duration-300"
+        >
+          <span class="flex items-center justify-center space-x-2"
+            >Save changes</span
+          >
+        </button> {% endcomment %}
+        {% endblock %}
+      </footer>
+    </article>
+  </div>
+</div>
+
+<script type="text/javascript" src='{% static "js/modal.js" %}'></script>
+{% block modal_loadscripts %} {% endblock %}

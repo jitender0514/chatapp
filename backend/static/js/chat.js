@@ -1,48 +1,120 @@
 $(document).ready(function () {
+
+var  timerId;
+
+    // Throttle function: Input as function which needs to be throttled and delay is the time interval in milliseconds
+var  throttleFunction  =  async function (func, args, delay) {
+	// Cancels the setTimeout method execution
+	clearTimeout(timerId);
+
+    const chatRoom = await CHAT_ROOM_MANAGER.getRoomById(args.room);
+    const userName = chatRoom.getUserNameById(args.user);
+    const txtColor = chatRoom.memberTxtColor[args.user]; 
+    showTypingName(args.user, userName, txtColor);
+
+	// Schedule a setTimeout after delay seconds
+	timerId  =  setTimeout(function () {
+		func(args);
+	}, delay)
+}
+
+async function  makeAPICall(data) {
+    removeTypingName(parseInt(data.user));
+}
+
+
+
+
+
+
+
+
+
     //----------------------------------------------------------------
     // WEB SOCKET CONNECTIONS AND MESSAGES HANDLING
-  const chatSocket = new WebSocket("ws://" + window.location.host + "/");
+  const chatSocket = new WebSocket("ws://" + window.location.host + "/ws/"+USERID+"/chat");
   chatSocket.onopen = function (e) {
     console.log("The connection was setup successfully !");
   };
   chatSocket.onclose = function (e) {
+    $("#connectionFailed").removeClass("hidden");
     console.log("Something unexpected happened !");
   };
 
-  chatSocket.onmessage = function (e) {
-    console.log(e);
+  chatSocket.onmessage = async function (e) {
     const data = JSON.parse(e.data);
-    const message = data.username == USERNAME ? sendChatTemplate(data) : incomingChatTemplate(data);
-    $("#id_message_send_input").val( "");
-    $(".messages-container").append(message);
+
+    // Display the messages coming from the server
+    if (data.type === "message"){
+        await addSocketMsg(data.data);
+        if (SELECTED_ROOM) {
+            await displayChatMessages(SELECTED_ROOM);
+            hideTypingMsgContainer();
+        }
+        updateRoomTime(data.data);
+    }
+
+    // Display the new room information
+
+    if (data.type === "newRoom") {
+        await displayChatRoom(CHAT_ROOM_MANAGER);
+        if ($(`div.chat-room-elem[data-id='${SELECTED_ROOM}']`).length > 0) {
+            $(`div.chat-room-elem[data-id='${SELECTED_ROOM}']`).trigger("click");
+          }
+    }
+
+    // typing messages
+    
+    if (data.type === "typing") {
+        if(parseInt(data.user) == USERID){
+            return;
+        }
+
+        if (SELECTED_ROOM == data.room) {
+            $(".messages-container-div").animate(
+                { scrollTop: $(MSG_CONTAINER_ID).height() },
+                100
+            );
+            throttleFunction(makeAPICall, data, 3000);
+        } else {
+            hideTypingMsgContainer();
+        }
+    }
+
   };
 
 
   // handle send message
-  $("#id_message_send_input").focus();
-  $( "#id_message_send_input" ).on( "keyup", function(e) {
+  $(MSG_INPUT_ID).focus();
+  $( MSG_INPUT_ID ).on( "keyup", function(e) {
     if (e.keyCode == 13) {
-        $("#id_message_send_button").trigger('click');
+        $(SEND_BUTTON_ID).trigger('click');
+        $(MSG_INPUT_ID).val( "");
+    } else {
+        chatSocket.send(
+            JSON.stringify({
+              action: 'typing',
+              user: USERID,
+              roomId: SELECTED_ROOM,
+            })
+          );
     }
   } );
 
 
-  $( "#id_message_send_button" ).on( "click", function() {
-    const msg = $( "#id_message_send_input" ).val();
+  $( SEND_BUTTON_ID ).on( "click", function() {
+    const msg = $( MSG_INPUT_ID ).val();
     if( $.trim(msg)) {
-        console.log(JSON.stringify({
-            message: msg,
-            username: USERNAME,
-            created: moment().format(),
-          }))
         chatSocket.send(
           JSON.stringify({
+            action: 'message',
             message: msg,
-            username: USERNAME,
-            created: moment().format(),
+            user: USERID,
+            roomId: SELECTED_ROOM,
           })
         );
     }
+    $(MSG_INPUT_ID).val( "");
   } );
 
 
@@ -55,40 +127,4 @@ $(document).ready(function () {
   }, 1000);
 });
 
-const updateTime = () => {
-  $(".text-time").each(function () {
-    const dateTime = $(this).attr("data-time");
-    if (!dateTime) {
-      return;
-    }
-    try {
-      const timeObj = moment(dateTime);
-      $(this).text(moment(timeObj).from(moment()));
-    } catch (e) {
-      $(this).text("Invalid");
-      return;
-    }
-  });
-};
 
-const incomingChatTemplate = (chatObj) => {
-  return `
-    <li class="flex justify-end">
-      <div class="relative max-w-xl px-4 py-2 text-gray-700 bg-gray-100 rounded shadow">
-        <p class="text-slate-400 text-xs text-time" data-time="${chatObj.created}"></p>
-        <span class="block">${chatObj.message}</span>
-      </div>
-    </li>
-    `;
-};
-
-const sendChatTemplate = (chatObj) => {
-  return `
-    <li class="flex justify-start">
-      <div class="relative max-w-xl px-4 py-2 text-gray-700 rounded shadow">
-        <p class="text-slate-400 text-xs text-time" data-time="${chatObj.created}"></p>
-        <span class="block">${chatObj.message}</span>
-      </div>
-    </li>
-    `;
-};
