@@ -1,0 +1,79 @@
+{% extends 'base/base.html' %} 
+
+{% block title %}Sing in{% endblock %}
+
+
+{% block body %}
+
+<div class="bg-slate-100  flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
+
+  <!-- message here -->
+ 
+  {% if messages %}
+  <ul class="messages">
+      {% for message in messages %}
+      <li{% if message.tags %} class="{{ message.tags }} {{message.level}}"{% endif %}>
+          {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}Important: {% endif %}
+          {{ message }}
+      </li>
+      {% endfor %}
+  </ul>
+  {% endif %}
+
+
+  <div class="mt-10 sm:mx-auto sm:w-full sm:max-w-sm w-full bg-white rounded-lg shadow border md:mt-0 sm:max-w-md p-4 bg-gray-800 border-gray-70">
+    <h2
+      class="text-center text-2xl font-bold leading-9 tracking-tight text-gray-900"
+    >
+      Registration Form
+    </h2>
+    <form class="space-y-4" method="POST">
+
+      {% csrf_token %}
+
+      {% if form.errors and form.non_field_errors %}
+      <div class="bg-orange-100 border-l-4 border-orange-500 text-orange-700 p-4" role="alert">
+        <p class="font-bold">Error</p>
+        {% for error in form.non_field_errors %}
+                <p>{{ error|escape }}</p>
+        {% endfor %}
+          </div>
+      {% endif %}
+
+
+      {% for field in form %}
+        <div>
+          <label
+            for="username"
+            class="block text-sm font-medium leading-6 text-gray-900"
+            >{{ field.label_tag }}</label
+          >
+          <div class="mt-2">{{ field }}</div>
+
+          {% if field.errors %}
+            {% for error in field.errors %}
+            <p class="text-red-500 text-xs italic error">{{ error}}</p>
+            {% endfor %}
+          
+        {% endif %}
+          
+        </div>
+
+      {% endfor %}
+
+      <div>
+        <button
+          type="submit"
+          class="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+        >
+          Sign in
+        </button>
+      </div>
+    </form>
+    <p class="mt-10 text-center text-sm text-gray-500">
+      Already have account?
+      <a href={% url 'user:login-user' %} class="font-semibold leading-6 text-indigo-600 hover:text-indigo-500">Go to Sign-In page.</a>
+    </p>
+  </div>
+</div>
+{% endblock %}
